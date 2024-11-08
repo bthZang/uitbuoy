@@ -16,7 +16,7 @@ export default function CourseItem({
     courseimage,
     id,
 }: Partial<Course>) {
-    const { hasDeadline, mostRecentActivity, loading } = useDeadline(id);
+    // const { hasDeadline, mostRecentActivity, loading } = useDeadline(id);
 
     const { addRecentCourse } = useRecentCourse();
 
@@ -26,7 +26,7 @@ export default function CourseItem({
                 addRecentCourse({ display_name, shortname, id });
                 router.push({
                     pathname: `/modals/courseDetail`,
-                    params: { display_name, shortname, id },
+                    params: { display_name, shortname, id, idnumber },
                 });
             }}
         >
@@ -40,23 +40,23 @@ export default function CourseItem({
                         {idnumber || shortname}
                     </Text>
                 </View>
-                {loading ? (
+                {/* {loading ? (
                     <DeadlineSkeleton />
                 ) : (
-                    <View>
-                        {hasDeadline ? (
-                            <Image
-                                source={HAS_DEADLINE_ICON}
-                                style={{ width: 50, height: 30 }}
-                            />
-                        ) : (
-                            <Image
-                                source={REST_TIME_RIGHT}
-                                style={{ width: 40, height: 40 }}
-                            />
-                        )}
-                    </View>
-                )}
+                )} */}
+                {/* <View>
+                    {hasDeadline ? (
+                        <Image
+                            source={HAS_DEADLINE_ICON}
+                            style={{ width: 50, height: 30 }}
+                        />
+                    ) : (
+                        <Image
+                            source={REST_TIME_RIGHT}
+                            style={{ width: 40, height: 40 }}
+                        />
+                    )}
+                </View> */}
             </View>
         </TouchableNativeFeedback>
     );

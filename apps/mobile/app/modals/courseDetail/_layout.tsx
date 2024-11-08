@@ -51,7 +51,9 @@ export default function Layout() {
                 <Tab.Screen
                     name="Notice"
                     children={() => (
-                        <NoticePage id={parseInt(params.id.toString(), 10)} />
+                        <NoticePage
+                            id={parseInt(params.idnumber.toString(), 10)}
+                        />
                     )}
                 />
                 <Tab.Screen

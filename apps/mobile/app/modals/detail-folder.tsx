@@ -45,7 +45,10 @@ export default function DetailActivity() {
                         key={item.filename}
                         onPress={() =>
                             item.fileurl && item.type === 'file'
-                                ? viewFile({ fileurl: item.fileurl })
+                                ? viewFile({
+                                      fileurl: item.fileurl,
+                                      filename: item.filename,
+                                  })
                                 : null
                         }
                         className=" mx-4"

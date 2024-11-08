@@ -94,4 +94,44 @@ export class NotificationService {
 
         return messages.length;
     }
+
+    async notifyChatMessage(
+        userId: number,
+        sender: User,
+        message: string,
+    ): Promise<number> {
+        let expo = new Expo({
+            useFcmV1: true,
+        });
+
+        const device = await this.repo.findOne({
+            where: {
+                user: {
+                    id: userId,
+                },
+            },
+        });
+
+        const messages: ExpoPushMessage[] = [];
+
+        messages.push({
+            to: device.token,
+            sound: 'default',
+            title: `Tin nhắn mới`,
+            body: `${sender.fullname}: ${message}`,
+            data: { sender, message },
+            channelId: 'assignment_due',
+        });
+
+        let chunks = expo.chunkPushNotifications(messages);
+
+        chunks.forEach(async (chunk) => {
+            try {
+                const ticketChunk =
+                    await expo.sendPushNotificationsAsync(chunk);
+            } catch (error) {}
+        });
+
+        return messages.length;
+    }
 }

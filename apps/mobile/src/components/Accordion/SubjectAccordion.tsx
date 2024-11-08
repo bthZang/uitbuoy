@@ -76,15 +76,21 @@ const SubjectAccordion = ({ name, subjects }: Props) => {
             </TouchableNativeFeedback>
             <Animated.View style={heightAnimationStyle}>
                 <Animated.View style={styles.contentContainer} ref={listRef}>
-                    <FlatList
-                        nestedScrollEnabled={false}
-                        scrollEnabled={false}
-                        data={subjects}
-                        renderItem={({ item }) => (
-                            <DetailSubjectItem subject={item} />
-                        )}
-                        keyExtractor={(item) => item.code}
-                    />
+                    {subjects?.length > 0 ? (
+                        <FlatList
+                            nestedScrollEnabled={false}
+                            scrollEnabled={false}
+                            data={subjects}
+                            renderItem={({ item }) => (
+                                <DetailSubjectItem subject={item} />
+                            )}
+                            keyExtractor={(item) => item.code}
+                        />
+                    ) : (
+                        <Text className=" mt-4 text-center font-semibold">
+                            Không có
+                        </Text>
+                    )}
                 </Animated.View>
             </Animated.View>
         </View>

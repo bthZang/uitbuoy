@@ -18,7 +18,6 @@ export class ChatResolver {
     @Query(() => [Message])
     @UseGuards(JwtAuthGuard)
     async messages(@CurrentUser() user: User, @Args('id') id: string) {
-        console.log({ user });
         const messages = await this.messageRepository.find({
             where: [
                 {

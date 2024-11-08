@@ -1,5 +1,7 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { FlatList, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
+import EMPTY_REMAINING_ACTIVITIES from '../../assets/empty-remaining-activities.png';
 import NOTIFICATION from '../../assets/notification.png';
 import PreviewMakeupClassSkeleton from '../skeletons/PreviewMakeupClassSkeleton';
 import { useMakeupClass } from '../stores/makeup-class.store';
@@ -37,6 +39,24 @@ export default function PreviewMakeupClass() {
                     />
                 </>
             )}
+            {classes.length === 0 && !loading ? (
+                <View className=" flex-1">
+                    <Image
+                        style={{
+                            flex: 1,
+                            width: '100%',
+                            height: 230,
+                            marginTop: 20,
+                        }}
+                        contentFit="contain"
+                        transition={1000}
+                        source={EMPTY_REMAINING_ACTIVITIES}
+                    />
+                    <Text className=" text-center font-semibold text-lg">
+                        Không có lịch học bù nào
+                    </Text>
+                </View>
+            ) : null}
         </View>
     );
 }

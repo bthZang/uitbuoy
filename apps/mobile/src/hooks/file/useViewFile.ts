@@ -2,20 +2,23 @@ import * as FileSystem from 'expo-file-system';
 import * as IntentLauncher from 'expo-intent-launcher';
 import { Platform } from 'react-native';
 import { useAuth } from '../../stores/auth.store';
+import { getMimeTypeOfFile } from '../../utils/getMimeType';
 
 export function useViewFile() {
     const { authData } = useAuth();
 
-    async function viewFile(file: { fileurl?: string; mimetype?: string }) {
+    async function viewFile(file: { fileurl?: string; filename?: string }) {
         const fileurl = file.fileurl
             .split('?')
             .slice(0, file.fileurl.split('?').length - 1)
             .join('');
-        const mimetype = file.mimetype || 'application/pdf';
+
+        const filename = file.filename;
+
+        const mimetype = getMimeTypeOfFile(filename);
 
         if (!fileurl) return;
 
-        const filename = fileurl.split('/').at(-1);
         const fileUri = FileSystem.documentDirectory + `${filename}`;
 
         const downloadResumable = FileSystem.createDownloadResumable(

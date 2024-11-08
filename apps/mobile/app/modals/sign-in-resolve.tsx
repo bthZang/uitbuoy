@@ -29,6 +29,7 @@ export default function SignInResolve() {
             getCourses({
                 variables: {
                     isNew: true,
+                    isRecent: false,
                 },
                 onCompleted(data) {
                     refetch();

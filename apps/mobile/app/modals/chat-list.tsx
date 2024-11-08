@@ -52,7 +52,7 @@ export default function Page() {
                 >
                     <FlatList
                         className=" flex-1"
-                        data={[...data.rooms].sort(
+                        data={[...(data?.rooms || [])].sort(
                             (a, b) => b.lastMessage.date - a.lastMessage.date,
                         )}
                         renderItem={({ item }) => <RoomItem room={item} />}

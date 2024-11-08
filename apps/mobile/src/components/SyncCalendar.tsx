@@ -15,7 +15,7 @@ export default function SyncCalendar() {
         <Animated.View
             entering={FadeIn}
             exiting={FadeOut}
-            className=" mx-4 py-4 px-6 rounded-2xl bg-primary-95"
+            className=" mt-4 py-4 px-6 rounded-none bg-primary-95"
         >
             <Text className=" text-xl text-primary-20 font-bold">
                 Đồng bộ với Google

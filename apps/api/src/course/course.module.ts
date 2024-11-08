@@ -1,6 +1,9 @@
 import { AuthModule } from '@/auth/auth.module';
+import { AssignmentApiService } from '@/event/services/assignment-api.service';
+import { EventApiService } from '@/event/services/event-api.service';
 import { LecturerModule } from '@/lecturer/lecturer.module';
-import { Module, forwardRef } from '@nestjs/common';
+import { UserModule } from '@/user/user.module';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApiModule } from 'src/api/api.module';
 import { CourseConfiguration } from './configuration/course.cofiguration';
@@ -13,11 +16,6 @@ import { ModuleResolver } from './resolvers/module.resolver';
 import { SectionResolver } from './resolvers/section.resolver';
 import { CourseApiService } from './services/course-api.service';
 import { CourseService } from './services/course.service';
-import { EventApiService } from '@/event/services/event-api.service';
-import { AssignmentApiService } from '@/event/services/assignment-api.service';
-import { SubjectModule } from '@/subject/subject.module';
-import { SubjectService } from '@/subject/services/subject.service';
-import { UserModule } from '@/user/user.module';
 
 @Module({
     imports: [
@@ -28,7 +26,6 @@ import { UserModule } from '@/user/user.module';
         TypeOrmModule.forFeature([CourseSectionEntity]),
         TypeOrmModule.forFeature([CourseModuleEntity]),
         TypeOrmModule.forFeature([CourseContentEntity]),
-        forwardRef(() => SubjectModule),
         UserModule,
     ],
     providers: [

@@ -40,8 +40,8 @@ export class AuthService {
         if (userDataFromDB) {
             return {
                 isFirstTimeLogin: false,
-                token: response.data.token,
                 ...userDataFromDB,
+                token: response.data.token,
             };
         }
 
@@ -54,8 +54,8 @@ export class AuthService {
 
         return {
             isFirstTimeLogin: true,
-            token: response.data.token,
             ...userData,
+            token: response.data.token,
         };
     }
 

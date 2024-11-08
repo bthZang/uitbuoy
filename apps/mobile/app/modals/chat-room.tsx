@@ -45,6 +45,7 @@ export default function Page() {
         );
 
         return () => {
+            if (!profile) return;
             socket.removeListener(`chat:${profile.profile.id.toString()}`);
         };
     }, [profile]);

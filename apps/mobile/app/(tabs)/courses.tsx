@@ -20,7 +20,7 @@ export default function Page() {
     useEffect(() => {
         fetchCourses({
             variables: { isNew: true, isRecent: true },
-            fetchPolicy: 'cache-first',
+            fetchPolicy: 'cache-and-network',
         });
     }, []);
 

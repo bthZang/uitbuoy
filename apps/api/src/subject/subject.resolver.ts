@@ -10,6 +10,11 @@ import { EducationProgram } from './entities/educationProgram.entity';
 import { Subject } from './entities/subject.entity';
 import { SubjectService } from './services/subject.service';
 import { Section } from './entities/section.entity';
+import { ElectiveSubjectsResult } from '@/course/dto/elective-subject-result.dto copy';
+import { QueryArgs } from '@/common/args/query.arg';
+import { ElectiveObjectArgs } from '@/common/args/electiveSubjects.arg';
+import { GiveLearningPathSubjectCodesResult } from '@/course/dto/give-learning-path-subject-codes-result.dto';
+import { LearningPathArgs } from '@/common/args/learningPath.arg';
 
 @Resolver(() => Subject)
 export class SubjectResolver {
@@ -101,5 +106,60 @@ export class SubjectResolver {
         @Args('major') major: string,
     ) {
         return this.subjectService.findEducationProgram(user.token, major);
+    }
+
+    @Query(() => [ElectiveSubjectsResult], {
+        description: 'Return all elective subjects recommend for user',
+    })
+    @UseGuards(JwtAuthGuard)
+    async recommendElectiveSubject(
+        @CurrentUser() user: User,
+        @Args() queryArgs: QueryArgs,
+        @Args() electiveObjectArgs: ElectiveObjectArgs,
+    ): Promise<ElectiveSubjectsResult[]> {
+        return this.subjectService.recommendElectiveSubject(
+            user,
+            queryArgs,
+            electiveObjectArgs,
+        );
+    }
+
+    @Query(() => GiveLearningPathSubjectCodesResult, {
+        description: 'Return learning code of elective subjects',
+    })
+    @UseGuards(JwtAuthGuard)
+    async giveLearningPathSubjectCodes(
+        @CurrentUser() user: User,
+        @Args() queryArgs: QueryArgs,
+    ): Promise<GiveLearningPathSubjectCodesResult> {
+        return this.subjectService.giveLearningPathSubjectCodes(
+            user,
+            queryArgs,
+        );
+    }
+
+    @Query(() => [Subject], {
+        description: 'Return all subjects recommend for user',
+    })
+    @UseGuards(JwtAuthGuard)
+    async recommendSubject(
+        @CurrentUser() user: User,
+        @Args() learningPathArgs: LearningPathArgs,
+        @Args() queryArgs: QueryArgs,
+    ) {
+        queryArgs.isRecent = false;
+
+        const giveLearningPathSubjectCodesResult =
+            await this.subjectService.giveLearningPathSubjectCodes(
+                user,
+                queryArgs,
+            );
+        // const result: Subject[] = [];
+        const result: Subject[] =
+            await this.subjectService.findSubjectsDataByCodes(
+                giveLearningPathSubjectCodesResult[learningPathArgs.option],
+            );
+
+        return result;
     }
 }

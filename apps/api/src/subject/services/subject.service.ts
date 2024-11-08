@@ -1,14 +1,19 @@
+import { ElectiveObjectArgs } from '@/common/args/electiveSubjects.arg';
+import { QueryArgs } from '@/common/args/query.arg';
+import { extraIncludes } from '@/common/utils/extraIncludes';
+import { ElectiveSubjectsResult } from '@/course/dto/elective-subject-result.dto copy';
+import { GiveLearningPathSubjectCodesResult } from '@/course/dto/give-learning-path-subject-codes-result.dto';
 import { CourseService } from '@/course/services/course.service';
 import { User } from '@/user/entities/user.entity';
 import { UserService } from '@/user/services/user.service';
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, In, Repository } from 'typeorm';
+import { AllSubjectCodeByMajorResult } from '../dto/allSubjectCodes';
 import { EducationProgram } from '../entities/educationProgram.entity';
 import { MajorSubject } from '../entities/majorSubject.entity';
 import { Section } from '../entities/section.entity';
 import { Subject } from '../entities/subject.entity';
-import { AllSubjectCodeByMajorResult } from '../dto/allSubjectCodes';
 
 @Injectable()
 export class SubjectService {
@@ -72,9 +77,7 @@ export class SubjectService {
         return subjectCodes;
     }
 
-    async findAllEducationSubjectsOfUser(user: User) {
-
-    }
+    async findAllEducationSubjectsOfUser(user: User) {}
 
     async findMajorSubjectByCodeList(
         codes: string[],
@@ -185,5 +188,89 @@ export class SubjectService {
 
         console.log({ majorSubjectCodes });
         return allSubjectCodes;
+    }
+
+    async giveLearningPathSubjectCodes(
+        user: User,
+        queryArgs: QueryArgs,
+    ): Promise<GiveLearningPathSubjectCodesResult> {
+        queryArgs.isRecent = false;
+        queryArgs.isNew = false;
+
+        const courses = await this.courseService.userCourses(user, queryArgs);
+
+        const learntCourse =
+            await this.courseService.findAllSubjectCodeByLearntCourse(courses);
+
+        const majorName = (
+            await this.courseService.findUserMajorByCourse(user, queryArgs)
+        )[1];
+
+        const allSubjectCodesByMajor = await this.findAllSubjectCodeByMajor(
+            user,
+            majorName,
+        );
+
+        console.log({ allSubjectCodesByMajor });
+        const electiveSubjects = [
+            ...(await this.courseService.spliceSubjectCodeArray(
+                allSubjectCodesByMajor.electiveSubjectCodes,
+                learntCourse,
+            )),
+        ];
+
+        const requiredSubjects = [
+            ...(await this.courseService.spliceSubjectCodeArray(
+                allSubjectCodesByMajor.requiredSubjectCodes,
+                learntCourse,
+            )),
+        ];
+        return { electiveSubjects, requiredSubjects };
+    }
+
+    async recommendElectiveSubject(
+        user: User,
+        queryArgs: QueryArgs,
+        electiveObjectArgs: ElectiveObjectArgs,
+    ): Promise<ElectiveSubjectsResult[]> {
+        const majorName = (
+            await this.courseService.findUserMajorByCourse(user, queryArgs)
+        )[1];
+
+        const year = await this.userService.findYear(user);
+
+        const electiveMajorSubjects = await this.findMajorSubjectByCodeList(
+            (await this.giveLearningPathSubjectCodes(user, queryArgs))
+                .electiveSubjects,
+            majorName,
+            year,
+        );
+
+        const electiveSubjects: {
+            name: string;
+            credits: string;
+            codes: string[];
+        }[] = electiveObjectArgs.options.map((value) => ({
+            ...value,
+            codes: [],
+        }));
+
+        for (let i = 0; i < electiveObjectArgs.options.length; i++) {
+            for (let j = 0; j < electiveMajorSubjects.length; j++) {
+                if (
+                    extraIncludes(
+                        electiveMajorSubjects[j].sections[0].name,
+                        electiveObjectArgs.options[i].name,
+                    )
+                ) {
+                    electiveSubjects[i].codes.push(
+                        electiveMajorSubjects[j].code,
+                    );
+                }
+            }
+        }
+        console.log({ electiveSubjects });
+
+        return electiveSubjects;
     }
 }

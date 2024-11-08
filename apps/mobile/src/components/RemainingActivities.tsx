@@ -1,15 +1,12 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { useEffect } from 'react';
 import { Text, TouchableNativeFeedback, View } from 'react-native';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import EMPTY_REMAINING_ACTIVITIES from '../../assets/empty-remaining-activities.png';
-import REFRESH_ICON from '../../assets/white-refresh.png';
+import NOTE_TEXT from '../../assets/note-text.png';
 import EventListSkeleton from '../skeletons/EventListSkeleton';
 import { useEvents } from '../stores/event.store';
 import { timeDiff } from '../utils/timeDiff';
-import NativeButton from './NativeButton/NativeButton';
-import NOTE_TEXT from '../../assets/note-text.png';
 import HeaderButton from './HeaderButton';
 
 export default function RemainingActivities() {
@@ -87,17 +84,22 @@ export default function RemainingActivities() {
                     ))
                 )}
                 {events.length === 0 && !loading ? (
-                    <Image
-                        style={{
-                            flex: 1,
-                            width: '100%',
-                            height: 230,
-                            marginTop: 20,
-                        }}
-                        contentFit="contain"
-                        transition={1000}
-                        source={EMPTY_REMAINING_ACTIVITIES}
-                    />
+                    <View className=" flex-1">
+                        <Image
+                            style={{
+                                flex: 1,
+                                width: '100%',
+                                height: 230,
+                                marginTop: 20,
+                            }}
+                            contentFit="contain"
+                            transition={1000}
+                            source={EMPTY_REMAINING_ACTIVITIES}
+                        />
+                        <Text className=" text-center font-semibold text-lg">
+                            Không có bài tập nào
+                        </Text>
+                    </View>
                 ) : null}
             </View>
         </View>

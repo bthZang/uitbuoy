@@ -33,7 +33,9 @@ export default function NoticePage({ id }: { id: number }) {
                                 gap: 8,
                             }}
                             scrollEnabled={false}
-                            data={data.makeUpClass}
+                            data={data.makeUpClass.filter(
+                                ({ classId }) => classId === id.toString(),
+                            )}
                             renderItem={({ item }) => (
                                 <CourseMakeupClass makeupClass={item} />
                             )}

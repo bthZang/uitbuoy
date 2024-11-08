@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default function MessageItem({ message }: Props) {
-    const { data } = useProfileQuery({ fetchPolicy: 'cache-only' });
+    const { data } = useProfileQuery({ fetchPolicy: 'cache-first' });
 
     const isSent = message.senderId == data.profile.id.toString();
 

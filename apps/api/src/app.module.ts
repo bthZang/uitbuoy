@@ -185,7 +185,7 @@ import { ChatModule } from './chat/chat.module';
         NewsFeedModule,
         NotificationModule,
         LearningPathModule,
-        ChatModule,
+        // ChatModule,
     ],
     controllers: [AppController],
     providers: [

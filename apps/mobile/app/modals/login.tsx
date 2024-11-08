@@ -9,12 +9,15 @@ import NativeButton from '../../src/components/NativeButton/NativeButton';
 import { useLogin } from '../../src/hooks/auth/useLogin';
 import { useAuth } from '../../src/stores/auth.store';
 import { Spinner } from '@gluestack-ui/themed';
+import { useRecentCourse } from '../../src/stores/recent-course.store';
 
 export default function Page() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
     const { isLogin } = useAuth();
+
+    const { removeAllRecentCourses } = useRecentCourse();
 
     const rootNavigationState = useRootNavigationState();
 
@@ -62,7 +65,13 @@ export default function Page() {
                     placeholder="Mật khẩu"
                 />
             </View>
-            <SignInButton username={username} password={password} />
+            <SignInButton
+                onSignin={() => {
+                    removeAllRecentCourses();
+                }}
+                username={username}
+                password={password}
+            />
         </View>
     );
 }
@@ -70,9 +79,11 @@ export default function Page() {
 function SignInButton({
     username,
     password,
+    onSignin,
 }: {
     username: string;
     password: string;
+    onSignin?: () => any;
 }) {
     const { login, loading } = useLogin();
 
@@ -92,6 +103,7 @@ function SignInButton({
                         const data = await login(username, password);
                         if (data) {
                             router.replace('/modals/sign-in-resolve');
+                            onSignin();
                         } else {
                             Alert.alert(
                                 'Lỗi đăng nhập',
